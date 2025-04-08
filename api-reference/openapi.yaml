@@ -1,0 +1,515 @@
+openapi: 3.0.3
+info:
+  title: Glober Platform API
+  version: 1.0.0
+  description: Combined API documentation for Glober Authentication and Translation Project management.
+
+servers:
+  - url: https://dev-project.api.glober.ai
+    description: Project API Server
+  - url: https://dev-auth.api.glober.ai
+    description: Auth API Server
+
+tags:
+  - name: Auth - Register & Login
+  - name: Auth - Token & Sessions
+  - name: Auth - User Management
+  - name: Projects - Core
+  - name: Projects - Assets
+  - name: Projects - Results & Status
+
+paths:
+  /api/v1/auth/register:
+    post:
+      tags: [Auth - Register & Login]
+      summary: Register a new user
+      description: /api/v1/auth/register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+                password: { type: string }
+                firstName: { type: string }
+                lastName: { type: string }
+              required: [email, password, firstName, lastName]
+      responses:
+        '201': { description: User registered successfully }
+
+  /api/v1/auth/login:
+    post:
+      tags: [Auth - Register & Login]
+      summary: Log in a user
+      description: /api/v1/auth/login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+                password: { type: string }
+              required: [email, password]
+      responses:
+        '200': { description: Login successful }
+
+  /api/v1/auth/verify-token:
+    post:
+      tags: [Auth - Token & Sessions]
+      summary: Verify a JWT token
+      description: /api/v1/auth/verify-token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token: { type: string }
+              required: [token]
+      responses:
+        '200': { description: Token is valid }
+
+  /api/v1/auth/logout:
+    post:
+      tags: [Auth - Token & Sessions]
+      summary: Log out a user
+      description: /api/v1/auth/logout
+      parameters:
+        - name: Authorization
+          in: header
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: Logged out successfully }
+
+  /api/v1/auth/refresh-token:
+    post:
+      tags: [Auth - Token & Sessions]
+      summary: Refresh access token
+      description: /api/v1/auth/refresh-token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken: { type: string }
+              required: [refreshToken]
+      responses:
+        '200': { description: New access token returned }
+
+  /api/v1/auth/users/{id}:
+    get:
+      tags: [Auth - User Management]
+      summary: Get user details by ID
+      description: /api/v1/auth/users/{id}
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+        - name: Authorization
+          in: header
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: User details returned }
+
+  /api/v1/auth/users/{id}/role:
+    put:
+      tags: [Auth - User Management]
+      summary: Update a user's role
+      description: /api/v1/auth/users/{id}/role
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string }
+        - name: Authorization
+          in: header
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role: { type: string }
+              required: [role]
+      responses:
+        '200': { description: User role updated }
+
+  /api/v1/auth/forgot-password:
+    post:
+      tags: [Auth - User Management]
+      summary: Request password reset code
+      description: /api/v1/auth/forgot-password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+              required: [email]
+      responses:
+        '200': { description: Reset code sent }
+
+  /api/v1/auth/reset-password:
+    post:
+      tags: [Auth - User Management]
+      summary: Reset user password
+      description: /api/v1/auth/reset-password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+                password: { type: string }
+                confirmationCode: { type: string }
+              required: [email, password, confirmationCode]
+      responses:
+        '200': { description: Password reset successfully }
+
+  /health:
+    get:
+      tags: [Projects - Core]
+      summary: Health Check
+      description: /health
+      responses:
+        '200': { description: Service is healthy }
+
+  /api/v1/projects:
+    post:
+      tags: [Projects - Core]
+      summary: Create Project
+      description: /api/v1/projects
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProjectRequest'
+      responses:
+        '201':
+          description: Project created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+
+  /api/v1/projects/{projectId}/assets:
+    post:
+      tags: [Projects - Assets]
+      summary: Upload Non-Text Assets
+      description: /api/v1/projects/{projectId}/assets
+      parameters:
+        - in: path
+          name: projectId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                assetType:
+                  type: string
+                  enum: [IMAGE, VIDEO, TEXT]
+                file:
+                  type: string
+                  format: binary
+              required: [assetType, file]
+      responses:
+        '201':
+          description: Asset uploaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+
+  /api/v1/projects/{projectId}/textAssets:
+    post:
+      tags: [Projects - Assets]
+      summary: Upload Text Assets
+      description: /api/v1/projects/{projectId}/textAssets
+      parameters:
+        - in: path
+          name: projectId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TextAssetRequest'
+      responses:
+        '201':
+          description: Text asset uploaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+
+  /api/v1/projects/{projectId}/status:
+    patch:
+      tags: [Projects - Results & Status]
+      summary: Change Project Status
+      description: /api/v1/projects/{projectId}/status
+      parameters:
+        - in: path
+          name: projectId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatusUpdateRequest'
+      responses:
+        '200':
+          description: Status updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusUpdateResponse'
+
+  /api/v1/projects/{projectId}:
+    get:
+      tags: [Projects - Results & Status]
+      summary: Get Project Detail
+      description: /api/v1/projects/{projectId}
+      parameters:
+        - in: path
+          name: projectId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Project detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResponse'
+
+  /api/v1/projects/{projectId}/results:
+    get:
+      tags: [Projects - Results & Status]
+      summary: Get Project Results
+      description: /api/v1/projects/{projectId}/results
+      parameters:
+        - in: path
+          name: projectId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Project result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResultsResponse'
+
+  /api/v1/projects/{projectId}/rerun:
+    post:
+      tags: [Projects - Results & Status]
+      summary: Rerun Project Config
+      description: /api/v1/projects/{projectId}/rerun
+      parameters:
+        - in: path
+          name: projectId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RerunRequest'
+      responses:
+        '200':
+          description: Rerun initiated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RerunResponse'
+
+components:
+  schemas:
+    CreateProjectRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        target_platform:
+          type: string
+          enum: [APPLE_APP_STORE, GOOGLE_PLAY_STORE, APPLE_ADS, GOOGLE_ADS]
+        target_content_type:
+          type: string
+          enum: [LOCALIZATION, DEMO_EXPANSION]
+        landing_page_url:
+          type: string
+        glossary_source:
+          type: string
+          enum: [CSV_UPLOAD, MANUAL_INPUT, EXISTING_CSV]
+        glossary_s3_path:
+          type: string
+        target_content_configs:
+          type: array
+          items:
+            type: object
+            properties:
+              source_language:
+                type: string
+              source_location:
+                type: string
+              target_language:
+                type: string
+              target_location:
+                type: string
+              target_demo_age:
+                type: string
+              target_demo_gender:
+                type: string
+              imageConfig:
+                type: array
+                items:
+                  type: object
+      required:
+        - name
+        - description
+        - target_platform
+        - target_content_type
+        - landing_page_url
+        - glossary_source
+        - target_content_configs
+
+    ProjectResponse:
+      type: object
+      properties:
+        project:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            description:
+              type: string
+            status:
+              type: string
+            target_platform:
+              type: string
+            target_content_type:
+              type: string
+            landing_page_url:
+              type: string
+            glossary_source:
+              type: string
+            glossary_s3_path:
+              type: string
+            target_content_config_ids:
+              type: array
+              items:
+                type: string
+            created_at:
+              type: string
+            updated_at:
+              type: string
+
+    TextAssetRequest:
+      type: object
+      properties:
+        assetType:
+          type: string
+        instructions:
+          type: string
+        content:
+          type: object
+      required:
+        - assetType
+        - instructions
+        - content
+
+    StatusUpdateRequest:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    StatusUpdateResponse:
+      type: object
+      properties:
+        projectId:
+          type: string
+        new_status:
+          type: string
+
+    ProjectResultsResponse:
+      type: object
+      properties:
+        projectId:
+          type: string
+        status:
+          type: string
+        result_assets:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              asset_type:
+                type: string
+              name:
+                type: string
+              resource_uri:
+                type: string
+              original_asset_id:
+                type: string
+              variation_spec_id:
+                type: string
+
+    RerunRequest:
+      type: object
+      properties:
+        target_content_config_id:
+          type: string
+      required:
+        - target_content_config_id
+
+    RerunResponse:
+      type: object
+      properties:
+        projectId:
+          type: string
+        status:
+          type: string
+        target_content_config_id:
+          type: string
