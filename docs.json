@@ -14,25 +14,13 @@
         "tab": "Overview",
         "groups": [
           {
-            "group": "Start Here",
-            "pages": [
-              "introduction",
-              "quickstart",
-              "development"
-            ]
+            "group": "Welcome",
+            "pages": ["introduction"]
           }
         ]
       },
       {
-        "tab": "API Reference",
-        "groups": [
-          {
-            "group": "Endpoints",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          }
-        ]
+        "tab": "API Reference"
       }
     ]
   },
@@ -51,13 +39,6 @@
       "type": "button",
       "label": "Try API",
       "href": "https://dev-project.api.glober.ai/"
-    }
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/globerai",
-      "github": "https://github.com/globerai",
-      "linkedin": "https://linkedin.com/company/globerai"
     }
   }
 }
