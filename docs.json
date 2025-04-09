@@ -43,10 +43,6 @@
   "navbar": {
     "links": [
       {
-        "label": "Home",
-        "href": "/"
-      },
-      {
         "label": "Support",
         "href": "mailto:support@glober.ai"
       }
@@ -59,6 +55,9 @@
   },
   "footer": {
     "socials": {
+      "x": "https://x.com/globerai",
+      "github": "https://github.com/globerai",
+      "linkedin": "https://linkedin.com/company/globerai"
     }
   }
 }
