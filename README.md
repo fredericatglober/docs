@@ -1,32 +1,43 @@
-# Mintlify Starter Kit
+# Glober API Docs
 
-Click on `Use this template` to copy the Mintlify starter kit. The starter kit contains examples including
+Welcome to the Glober Platform API documentation.
 
-- Guide pages
-- Navigation
-- Customizations
-- API Reference pages
-- Use of popular components
+We offer two main sets of endpoints:
+- 🟢 **Project API** (create, update, and manage translation projects)
+- 🔐 **Auth API** (register, login, token management)
 
-### Development
+👇 Scroll down or use the left menu to explore the endpoints.
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mintlify) to preview the documentation changes locally. To install, use the following command
+---
 
-```
-npm i -g mintlify
-```
+## Getting Started
 
-Run the following command at the root of your documentation (where docs.json is)
+You can start using the API by making a health check call:
 
-```
-mintlify dev
-```
+GET https://dev-project.api.glober.ai/health
 
-### Publishing Changes
 
-Install our Github App to auto propagate changes from your repo to your deployment. Changes will be deployed to production automatically after pushing to the default branch. Find the link to install on your dashboard. 
+---
 
-#### Troubleshooting
+## Auth Overview
 
-- Mintlify dev isn't running - Run `mintlify install` it'll re-install dependencies.
-- Page loads as a 404 - Make sure you are running in a folder with `docs.json`
+1. **Register:**  
+   `POST /api/v1/auth/register`
+
+2. **Login:**  
+   `POST /api/v1/auth/login`
+
+You’ll receive a token to authenticate other requests.
+
+---
+
+## Project API Flow
+
+1. Create a Project  
+2. Upload Assets  
+3. Get Results  
+4. Rerun if needed
+
+---
+
+_For more, use the API Explorer to the left._

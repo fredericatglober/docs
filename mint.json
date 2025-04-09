@@ -1,0 +1,7 @@
+{
+  "name": "Glober Docs",
+  "description": "Combined API documentation for Glober Authentication and Translation Project management.",
+  "api": {
+    "openapi": "openapi.yaml"
+  }
+}
