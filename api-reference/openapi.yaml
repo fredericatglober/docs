@@ -5,9 +5,9 @@ info:
   description: Combined API documentation for Glober Authentication and Translation Project management.
 
 servers:
-  - url: https://dev-project.api.glober.ai
+  - url: https://api.glober.ai
     description: Project API Server
-  - url: https://dev-auth.api.glober.ai
+  - url: https://auth.api.glober.ai
     description: Auth API Server
 
 tags:
