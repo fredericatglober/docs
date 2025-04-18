@@ -23,7 +23,8 @@ paths:
     post:
       tags: [Auth - Register & Login]
       summary: Register a new user
-      description: /api/v1/auth/register
+      description: |
+        `/api/v1/auth/register`
       requestBody:
         required: true
         content:
@@ -43,7 +44,8 @@ paths:
     post:
       tags: [Auth - Register & Login]
       summary: Log in a user
-      description: /api/v1/auth/login
+      description: |
+        '/api/v1/auth/login'
       requestBody:
         required: true
         content:
@@ -61,7 +63,8 @@ paths:
     post:
       tags: [Auth - Token & Sessions]
       summary: Verify a JWT token
-      description: /api/v1/auth/verify-token
+      description: |
+        '/api/v1/auth/verify-token'
       requestBody:
         required: true
         content:
@@ -78,7 +81,8 @@ paths:
     post:
       tags: [Auth - Token & Sessions]
       summary: Log out a user
-      description: /api/v1/auth/logout
+      description: |
+        '/api/v1/auth/logout'
       parameters:
         - name: Authorization
           in: header
@@ -91,7 +95,8 @@ paths:
     post:
       tags: [Auth - Token & Sessions]
       summary: Refresh access token
-      description: /api/v1/auth/refresh-token
+      description: |
+        '/api/v1/auth/refresh-token'
       requestBody:
         required: true
         content:
@@ -109,9 +114,7 @@ paths:
       tags: [Auth - User Management]
       summary: Get user details by ID
       description: |
-        ```
-        /api/v1/auth/users/{id}
-        ```
+        `/api/v1/auth/users/{id}`
       parameters:
         - name: id
           in: path
@@ -129,9 +132,9 @@ paths:
       tags: [Auth - User Management]
       summary: Update a user's role
       description: |
-        ```
+        `
         /api/v1/auth/users/{id}/role
-        ```
+        `
       parameters:
         - name: id
           in: path
@@ -157,7 +160,8 @@ paths:
     post:
       tags: [Auth - User Management]
       summary: Request password reset code
-      description: /api/v1/auth/forgot-password
+      description: |
+        '/api/v1/auth/forgot-password'
       requestBody:
         required: true
         content:
@@ -174,7 +178,8 @@ paths:
     post:
       tags: [Auth - User Management]
       summary: Reset user password
-      description: /api/v1/auth/reset-password
+      description: |
+        '/api/v1/auth/reset-password'
       requestBody:
         required: true
         content:
@@ -193,7 +198,8 @@ paths:
     get:
       tags: [Projects - Core]
       summary: Health Check
-      description: /health
+      description: |
+        '/health'
       responses:
         '200': { description: Service is healthy }
 
@@ -201,7 +207,8 @@ paths:
     post:
       tags: [Projects - Core]
       summary: Create Project
-      description: /api/v1/projects
+      description: |
+        '/api/v1/projects'
       requestBody:
         required: true
         content:
@@ -221,9 +228,9 @@ paths:
       tags: [Projects - Assets]
       summary: Upload Non-Text Assets
       description: |
-        ```
+        `
         /api/v1/projects/{projectId}/assets
-        ```
+        `
       parameters:
         - in: path
           name: projectId
@@ -257,9 +264,9 @@ paths:
       tags: [Projects - Assets]
       summary: Upload Text Assets
       description: |
-        ```
+        `
         /api/v1/projects/{projectId}/textAssets
-        ```
+        `
       parameters:
         - in: path
           name: projectId
@@ -285,9 +292,9 @@ paths:
       tags: [Projects - Results & Status]
       summary: Change Project Status
       description: |
-        ```
+        `
         /api/v1/projects/{projectId}/status
-        ```
+        `
       parameters:
         - in: path
           name: projectId
@@ -313,9 +320,9 @@ paths:
       tags: [Projects - Results & Status]
       summary: Get Project Detail
       description: |
-        ```
+        `
         /api/v1/projects/{projectId}
-        ```
+        `
       parameters:
         - in: path
           name: projectId
@@ -335,9 +342,9 @@ paths:
       tags: [Projects - Results & Status]
       summary: Get Project Results
       description: |
-        ```
+        `
         /api/v1/projects/{projectId}/results
-        ```
+        `
       parameters:
         - in: path
           name: projectId
@@ -357,9 +364,9 @@ paths:
       tags: [Projects - Results & Status]
       summary: Rerun Project Config
       description: |
-        ```
+        `
         /api/v1/projects/{projectId}/rerun
-        ```
+        `
       parameters:
         - in: path
           name: projectId
