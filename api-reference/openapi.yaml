@@ -108,7 +108,10 @@ paths:
     get:
       tags: [Auth - User Management]
       summary: Get user details by ID
-      description: "'/api/v1/auth/users/{id}'"
+      description: |
+        ```
+        /api/v1/auth/users/{id}
+        ```
       parameters:
         - name: id
           in: path
