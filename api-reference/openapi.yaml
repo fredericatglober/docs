@@ -109,9 +109,7 @@ paths:
       tags: [Auth - User Management]
       summary: Get user details by ID
       description: |
-        ```
-        /api/v1/auth/users/{id}
-        ```
+        `/api/v1/auth/users/{id}`
       parameters:
         - name: id
           in: path
@@ -129,9 +127,9 @@ paths:
       tags: [Auth - User Management]
       summary: Update a user's role
       description: |
-        ```
+        `
         /api/v1/auth/users/{id}/role
-        ```
+        `
       parameters:
         - name: id
           in: path
@@ -221,9 +219,9 @@ paths:
       tags: [Projects - Assets]
       summary: Upload Non-Text Assets
       description: |
-        ```
+        `
         /api/v1/projects/{projectId}/assets
-        ```
+        `
       parameters:
         - in: path
           name: projectId
@@ -257,9 +255,9 @@ paths:
       tags: [Projects - Assets]
       summary: Upload Text Assets
       description: |
-        ```
+        `
         /api/v1/projects/{projectId}/textAssets
-        ```
+        `
       parameters:
         - in: path
           name: projectId
@@ -285,9 +283,9 @@ paths:
       tags: [Projects - Results & Status]
       summary: Change Project Status
       description: |
-        ```
+        `
         /api/v1/projects/{projectId}/status
-        ```
+        `
       parameters:
         - in: path
           name: projectId
@@ -313,9 +311,9 @@ paths:
       tags: [Projects - Results & Status]
       summary: Get Project Detail
       description: |
-        ```
+        `
         /api/v1/projects/{projectId}
-        ```
+        `
       parameters:
         - in: path
           name: projectId
@@ -335,9 +333,9 @@ paths:
       tags: [Projects - Results & Status]
       summary: Get Project Results
       description: |
-        ```
+        `
         /api/v1/projects/{projectId}/results
-        ```
+        `
       parameters:
         - in: path
           name: projectId
@@ -357,9 +355,9 @@ paths:
       tags: [Projects - Results & Status]
       summary: Rerun Project Config
       description: |
-        ```
+        `
         /api/v1/projects/{projectId}/rerun
-        ```
+        `
       parameters:
         - in: path
           name: projectId
