@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Glober Platform API
-  version: 1.0.0
+  version: 1.0.1
   description: Combined API documentation for Glober Authentication and Translation Project management.
 
 servers:
@@ -19,190 +19,6 @@ tags:
   - name: Projects - Results & Status
 
 paths:
-  /api/v1/auth/register:
-    post:
-      tags: [Auth - Register & Login]
-      summary: Register a new user
-      description: |
-        `/api/v1/auth/register`
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email: { type: string }
-                password: { type: string }
-                firstName: { type: string }
-                lastName: { type: string }
-              required: [email, password, firstName, lastName]
-      responses:
-        '201': { description: User registered successfully }
-
-  /api/v1/auth/login:
-    post:
-      tags: [Auth - Register & Login]
-      summary: Log in a user
-      description: |
-        `/api/v1/auth/login`
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email: { type: string }
-                password: { type: string }
-              required: [email, password]
-      responses:
-        '200': { description: Login successful }
-
-  /api/v1/auth/verify-token:
-    post:
-      tags: [Auth - Token & Sessions]
-      summary: Verify a JWT token
-      description: |
-        `/api/v1/auth/verify-token`
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                token: { type: string }
-              required: [token]
-      responses:
-        '200': { description: Token is valid }
-
-  /api/v1/auth/logout:
-    post:
-      tags: [Auth - Token & Sessions]
-      summary: Log out a user
-      description: |
-        `/api/v1/auth/logout`
-      parameters:
-        - name: Authorization
-          in: header
-          required: true
-          schema: { type: string }
-      responses:
-        '200': { description: Logged out successfully }
-
-  /api/v1/auth/refresh-token:
-    post:
-      tags: [Auth - Token & Sessions]
-      summary: Refresh access token
-      description: |
-        '/api/v1/auth/refresh-token'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                refreshToken: { type: string }
-              required: [refreshToken]
-      responses:
-        '200': { description: New access token returned }
-
-  /api/v1/auth/users/{id}:
-    get:
-      tags: [Auth - User Management]
-      summary: Get user details by ID
-      description: |
-        `/api/v1/auth/users/{id}`
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema: { type: string }
-        - name: Authorization
-          in: header
-          required: true
-          schema: { type: string }
-      responses:
-        '200': { description: User details returned }
-
-  /api/v1/auth/users/{id}/role:
-    put:
-      tags: [Auth - User Management]
-      summary: Update a user's role
-      description: |
-        `
-        /api/v1/auth/users/{id}/role
-        `
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema: { type: string }
-        - name: Authorization
-          in: header
-          required: true
-          schema: { type: string }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                role: { type: string }
-              required: [role]
-      responses:
-        '200': { description: User role updated }
-
-  /api/v1/auth/forgot-password:
-    post:
-      tags: [Auth - User Management]
-      summary: Request password reset code
-      description: |
-        `/api/v1/auth/forgot-password`
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email: { type: string }
-              required: [email]
-      responses:
-        '200': { description: Reset code sent }
-
-  /api/v1/auth/reset-password:
-    post:
-      tags: [Auth - User Management]
-      summary: Reset user password
-      description: |
-        `/api/v1/auth/reset-password`
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email: { type: string }
-                password: { type: string }
-                confirmationCode: { type: string }
-              required: [email, password, confirmationCode]
-      responses:
-        '200': { description: Password reset successfully }
-
-  /health:
-    get:
-      tags: [Projects - Core]
-      summary: Health Check
-      description: |
-        `/health`
-      responses:
-        '200': { description: Service is healthy }
-
   /api/v1/projects:
     post:
       tags: [Projects - Core]
@@ -221,16 +37,31 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectResponse'
+                type: object
+                properties:
+                  projectId:
+                    type: string
+                  message:
+                    type: string
+              example:
+                projectId: df3c70c4-8532-4848-9c20-55a9afe2b0e9
+                message: Project created successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                message: Input validation error
+                errors:
+                  - path: ["name"]
+                    message: Required
 
   /api/v1/projects/{projectId}/assets:
     post:
       tags: [Projects - Assets]
       summary: Upload Non-Text Assets
       description: |
-        `
-        /api/v1/projects/{projectId}/assets
-        `
+        `/api/v1/projects/{projectId}/assets`
       parameters:
         - in: path
           name: projectId
@@ -256,17 +87,37 @@ paths:
           description: Asset uploaded
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/ProjectResponse'
+              example:
+                project:
+                  id: df3c70c4-8532-4848-9c20-55a9afe2b0e9
+                  assets:
+                    - id: ecd1438f-8283-4d2a-8d82-a3fd16419e17
+                      name: Screenshot 2025-04-15 105700.png
+                      type: IMAGE
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                message: Input validation error
+                errors:
+                  - path: ["id"]
+                    message: ID must be a valid UUID
+        '404':
+          description: Project not found
+          content:
+            application/json:
+              example:
+                success: false
+                message: Project not found
+                error: ApiError
 
   /api/v1/projects/{projectId}/textAssets:
     post:
       tags: [Projects - Assets]
       summary: Upload Text Assets
       description: |
-        `
-        /api/v1/projects/{projectId}/textAssets
-        `
+        `/api/v1/projects/{projectId}/textAssets`
       parameters:
         - in: path
           name: projectId
@@ -278,114 +129,28 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TextAssetRequest'
+              type: object
+              properties:
+                instructions:
+                  type: string
+                content:
+                  type: object
+              required: [instructions, content]
       responses:
         '201':
           description: Text asset uploaded
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/ProjectResponse'
-
-  /api/v1/projects/{projectId}/status:
-    patch:
-      tags: [Projects - Results & Status]
-      summary: Change Project Status
-      description: |
-        `
-        /api/v1/projects/{projectId}/status
-        `
-      parameters:
-        - in: path
-          name: projectId
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/StatusUpdateRequest'
-      responses:
-        '200':
-          description: Status updated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StatusUpdateResponse'
-
-  /api/v1/projects/{projectId}:
-    get:
-      tags: [Projects - Results & Status]
-      summary: Get Project Detail
-      description: |
-        `
-        /api/v1/projects/{projectId}
-        `
-      parameters:
-        - in: path
-          name: projectId
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Project detail
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProjectResponse'
-
-  /api/v1/projects/{projectId}/results:
-    get:
-      tags: [Projects - Results & Status]
-      summary: Get Project Results
-      description: |
-        `
-        /api/v1/projects/{projectId}/results
-        `
-      parameters:
-        - in: path
-          name: projectId
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Project result
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProjectResultsResponse'
-
-  /api/v1/projects/{projectId}/rerun:
-    post:
-      tags: [Projects - Results & Status]
-      summary: Rerun Project Config
-      description: |
-        `
-        /api/v1/projects/{projectId}/rerun
-        `
-      parameters:
-        - in: path
-          name: projectId
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RerunRequest'
-      responses:
-        '200':
-          description: Rerun initiated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RerunResponse'
+              example:
+                project:
+                  id: 751c8e9c-b582-4df6-957b-f49df3a0ef6b
+                  assets:
+                    - id: 751c8e9c-b582-4df6-957b-f49df3a0ef6b
+                      name: test_asset
+                      instructions: test_instructions
+                      type: TEXT
+                      content:
+                        Headline: some headline
 
 components:
   schemas:
@@ -426,10 +191,17 @@ components:
                 type: string
               target_demo_gender:
                 type: string
-              imageConfig:
+              image_configs:
                 type: array
                 items:
                   type: object
+                  properties:
+                    width:
+                      type: integer
+                    height:
+                      type: integer
+                    count:
+                      type: integer
       required:
         - name
         - description
@@ -438,109 +210,3 @@ components:
         - landing_page_url
         - glossary_source
         - target_content_configs
-
-    ProjectResponse:
-      type: object
-      properties:
-        project:
-          type: object
-          properties:
-            id:
-              type: string
-            name:
-              type: string
-            description:
-              type: string
-            status:
-              type: string
-            target_platform:
-              type: string
-            target_content_type:
-              type: string
-            landing_page_url:
-              type: string
-            glossary_source:
-              type: string
-            glossary_s3_path:
-              type: string
-            target_content_config_ids:
-              type: array
-              items:
-                type: string
-            created_at:
-              type: string
-            updated_at:
-              type: string
-
-    TextAssetRequest:
-      type: object
-      properties:
-        assetType:
-          type: string
-        instructions:
-          type: string
-        content:
-          type: object
-      required:
-        - assetType
-        - instructions
-        - content
-
-    StatusUpdateRequest:
-      type: object
-      properties:
-        status:
-          type: string
-      required:
-        - status
-
-    StatusUpdateResponse:
-      type: object
-      properties:
-        projectId:
-          type: string
-        new_status:
-          type: string
-
-    ProjectResultsResponse:
-      type: object
-      properties:
-        projectId:
-          type: string
-        status:
-          type: string
-        result_assets:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-              asset_type:
-                type: string
-              name:
-                type: string
-              resource_uri:
-                type: string
-              original_asset_id:
-                type: string
-              variation_spec_id:
-                type: string
-
-    RerunRequest:
-      type: object
-      properties:
-        target_content_config_id:
-          type: string
-      required:
-        - target_content_config_id
-
-    RerunResponse:
-      type: object
-      properties:
-        projectId:
-          type: string
-        status:
-          type: string
-        target_content_config_id:
-          type: string
