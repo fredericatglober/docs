@@ -321,6 +321,172 @@ paths:
                       content:
                         Headline: some headline
 
+
+  /api/v1/projects/{projectId}/status:
+    patch:
+      tags: [Projects - Results & Status]
+      summary: Change Project Status
+      description: |
+        `/api/v1/projects/{projectId}/status`
+      parameters:
+        - in: path
+          name: projectId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatusUpdateRequest'
+      responses:
+        '200':
+          description: Status updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusUpdateResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                message: Input validation error
+                errors:
+                  - path: ["status"]
+                    message: Invalid enum value. Expected 'PENDING', 'IN_PROGRESS', 'COMPLETED', 'FAILED'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                success: false
+                message: Project not found
+                error: ApiError
+
+  /api/v1/projects/{projectId}:
+    get:
+      tags: [Projects - Results & Status]
+      summary: Get Project Detail
+      description: |
+        `/api/v1/projects/{projectId}`
+      parameters:
+        - in: path
+          name: projectId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Project detail
+          content:
+            application/json:
+              example:
+                name: test_project
+                description: test_description
+                target_platform: APPLE_APP_STORE
+                target_content_type: LOCALIZATION
+                landing_page_url: https://www.example.com
+                glossary_source: CSV_UPLOAD
+                glossary_s3_path: s3://bucket/path/to/glossary.csv
+                status: IN_PROGRESS
+                created_at: 2021-01-01T00:00:00Z
+                updated_at: 2021-01-01T00:00:00Z
+                target_content_configs:
+                  - source_language: Chinese
+                    source_location: Taiwan
+                    target_language: Arabic
+                    target_location: Saudi Arabia
+                    target_demo_age: 18-24
+                    target_demo_gender: MALE
+                    image_configs:
+                      - width: 1920
+                        height: 1038
+                        count: 3
+                      - width: 1600
+                        height: 900
+                        count: 2
+                      - width: 1200
+                        height: 630
+                        count: 2
+                    status: IN_PROGRESS
+                    created_at: 2021-01-01T00:00:00Z
+                    updated_at: 2021-01-01T00:00:00Z
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              example:
+                success: false
+                message: Project not found
+                error: ApiError
+
+  /api/v1/projects/{projectId}/results:
+    get:
+      tags: [Projects - Results & Status]
+      summary: Get Project Results
+      description: |
+        `/api/v1/projects/{projectId}/results`
+      parameters:
+        - in: path
+          name: projectId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Project result
+          content:
+            application/json:
+              example:
+                projectId: ca8b5419-84f9-43cb-bade-eec91e4f4054
+                status: PENDING
+                targets:
+                  - id: f18aa6fe-e6da-4c53-9c12-acd12dc1f676
+                    results:
+                      - id: 3401efcd-a55e-4f49-817e-a73e11c7c269
+                        asset_type: IMAGE
+                        name: test
+                        resource_uri: https://glober-assets1.s3.us-east-2.amazonaws.com/assets/ca8b5419-84f9-43cb-bade-eec91e4f4054/1744968756571-20241209_143605.jpg
+        '404':
+          description: Task not found
+          content:
+            application/json:
+              example:
+                success: false
+                message: Task not found
+                error: ApiError
+
+  /api/v1/projects/{projectId}/rerun:
+    post:
+      tags: [Projects - Results & Status]
+      summary: Rerun Project Config
+      description: |
+        `/api/v1/projects/{projectId}/rerun`
+      parameters:
+        - in: path
+          name: projectId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RerunRequest'
+      responses:
+        '200':
+          description: Rerun initiated
+          content:
+            application/json:
+              example:
+                projectId: 751c8e9c-b582-4df6-957b-f49df3a0ef6b
+                status: PENDING
+                target_content_config_id: 751c8e9c-b582-4df6-957b-f49df3a0ef6b
+
+
 components:
   schemas:
     TextAssetRequest:
@@ -393,3 +559,37 @@ components:
         - landing_page_url
         - glossary_source
         - target_content_configs
+
+    StatusUpdateRequest:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    StatusUpdateResponse:
+      type: object
+      properties:
+        projectId:
+          type: string
+        new_status:
+          type: string
+
+    RerunRequest:
+      type: object
+      properties:
+        target_content_config_id:
+          type: string
+      required:
+        - target_content_config_id
+
+    RerunResponse:
+      type: object
+      properties:
+        projectId:
+          type: string
+        status:
+          type: string
+        target_content_config_id:
+          type: string
